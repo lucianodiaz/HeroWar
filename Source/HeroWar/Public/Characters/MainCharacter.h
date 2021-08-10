@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Character.h"
 #include "Intefaces/PushedObject.h"
-#include "Ammo/MainBullet.h"
 #include "MainCharacter.generated.h"
 
 
+class AAWeapon;
 UCLASS()
 class HEROWAR_API AMainCharacter : public ACharacter, public IPushedObject
 {
@@ -21,11 +22,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 	
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -39,33 +37,30 @@ private:
 
 	void StartShoot();
 
-	void Shoot();
-
 	void StopShoot();
 
-public:
+protected:
+	
 	//Methods
 
+	UPROPERTY(BlueprintReadOnly)
+	AAWeapon* CurrentWeapon;
+	
+	UPROPERTY(EditDefaultsOnly,Category="Weapon")
+	TSubclassOf<AAWeapon> DefaultWeaponClass;
+
+	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly,Category="Weapon")
+	FName WeaponSocketName;
+	
 	UFUNCTION(BlueprintCallable)
-	void Pushed(FVector Impulse) override;
-
-	//UFUNCTION()
-	void ChangeAmmo(TSubclassOf<AMainBullet> NewAmmo);
-public:
-	//Variables
-
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<AMainBullet> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<AMainBullet> DefaultProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = Gameplay)
-	FVector GunOffset;
+	virtual void Pushed(FVector Impulse) override;
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	float RotationSpeed = 45;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float ShootingRange = 500;
+
+	UPROPERTY(BlueprintReadWrite,Category="Weapon")
+	bool bIsShooting;
 };
