@@ -18,6 +18,9 @@ class HEROWAR_API AMainBullet : public AActor
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComp;
 
+	UPROPERTY(VisibleDefaultsOnly,Category = Projectile)
+	UStaticMeshComponent* StaticMeshComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
@@ -45,21 +48,23 @@ public:
 	void ClearAmmo();
 public:
 	//Variables
+	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
+	float Damage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly)
+	TSubclassOf<UDamageType> DamageCauser;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	float PushStrenght = 100.0f;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	float PushPitchAngle = 50.0f;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	float InitialSpeed = 1000.0f;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	float MaxSpeed = 1000.0f;
-
-	/*UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FVector UpVector;*/
 
 	FTimerHandle Destroy_TimerHandle;
 

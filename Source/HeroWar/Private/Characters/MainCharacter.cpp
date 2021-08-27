@@ -6,6 +6,7 @@
 #include "AWeapon.h"
 #include "Engine/StaticMeshActor.h"
 #include "DrawDebugHelpers.h"
+#include "Components/SHealthComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -13,7 +14,9 @@ AMainCharacter::AMainCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	//PrimaryActorTick.bCanEverTick = true;
 
+	HealthComponent = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComponent"));
 	WeaponSocketName = "GunSocket";
+	
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +68,7 @@ void AMainCharacter::Pushed(FVector Impulse)
 	LaunchCharacter(Impulse,false,false);
 }
 
+
 void AMainCharacter::MoveForward(float Value)
 {
 	AddMovementInput(GetActorForwardVector(), Value);
@@ -72,5 +76,4 @@ void AMainCharacter::MoveForward(float Value)
 void AMainCharacter::MoveRight(float Value)
 {
 	AddControllerYawInput(Value * RotationSpeed * GetWorld()->GetDeltaSeconds());
-
 }

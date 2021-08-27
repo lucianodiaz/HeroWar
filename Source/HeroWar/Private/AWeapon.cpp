@@ -66,8 +66,16 @@ void AAWeapon::StopShoot()
 	GetWorldTimerManager().ClearTimer(TimerHandle_Shoot);
 }
 
-void AAWeapon::ChangeAmmo(TSubclassOf<AMainBullet> NewAmmo)
+void AAWeapon::ChangeAmmo(TSubclassOf<AMainBullet> NewAmmo = NULL)
 {
-	ProjectileClass = NewAmmo;
+	if(NewAmmo)
+	{
+		ProjectileClass = NewAmmo;
+	}
+	else
+	{
+		ProjectileClass = DefaultProjectileClass;
+	}
+	
 }
 

@@ -9,6 +9,7 @@
 #include "MainCharacter.generated.h"
 
 
+class USHealthComponent;
 class AAWeapon;
 UCLASS()
 class HEROWAR_API AMainCharacter : public ACharacter, public IPushedObject
@@ -27,10 +28,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	//Funciones
-private:
 	
+private:
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
@@ -40,27 +39,25 @@ private:
 	void StopShoot();
 
 protected:
-	
-	//Methods
-
 	UPROPERTY(BlueprintReadOnly)
 	AAWeapon* CurrentWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	USHealthComponent* HealthComponent;
 	
 	UPROPERTY(EditDefaultsOnly,Category="Weapon")
 	TSubclassOf<AAWeapon> DefaultWeaponClass;
 
 	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly,Category="Weapon")
 	FName WeaponSocketName;
-	
-	UFUNCTION(BlueprintCallable)
-	virtual void Pushed(FVector Impulse) override;
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	float RotationSpeed = 45;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float ShootingRange = 500;
-
 	UPROPERTY(BlueprintReadWrite,Category="Weapon")
 	bool bIsShooting;
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void Pushed(FVector Impulse) override;
+
 };

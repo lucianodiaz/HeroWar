@@ -54,6 +54,7 @@ protected:
 	void StartShoot();
 
 	void StopShoot();
-	
+
+	UFUNCTION(BlueprintCallable)
 	void ChangeAmmo(TSubclassOf<AMainBullet> NewAmmo);
 };
