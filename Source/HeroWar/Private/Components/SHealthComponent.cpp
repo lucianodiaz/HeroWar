@@ -3,6 +3,8 @@
 
 #include "Components/SHealthComponent.h"
 
+#include "SClassicGameMode.h"
+#include "SPlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -13,6 +15,7 @@ USHealthComponent::USHealthComponent()
 	// ...
 
 	DefaultHealth = 2.0f;
+	Lives = 3;
 	SetIsReplicatedByDefault(true);
 	bIsDead = false;
 }
@@ -32,10 +35,12 @@ void USHealthComponent::BeginPlay()
 		{
 			MyOwner->OnTakeAnyDamage.AddDynamic(this,&USHealthComponent::HandleTakeAnyDamage);
 		}
+
 	}
 
 
 	Health = DefaultHealth;
+	
 }
 
 void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
@@ -54,14 +59,33 @@ void USHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, 
 
 	OnHealthChanged.Broadcast(Health,Damage,DamageType,InstigatedBy,DamageCauser);
 
-	//ASGameMode* GM = Cast<ASGameMode>(GetWorld()->GetAuthGameMode());
+	ASClassicGameMode* GM = Cast<ASClassicGameMode>(GetWorld()->GetAuthGameMode());
 
 	if(bIsDead)
 	{
-		// if(GM)
-		// {
-		// 	GM->OnActorKilled.Broadcast(GetOwner(),DamageCauser,InstigatedBy);
-		// }
+		Lives -=1;
+		ASPlayerState* PS = Cast<ASPlayerState>(GetOwner()->GetInstigatorController()->PlayerState);
+		if(PS)
+		{
+			PS->SetPlayerLives(Lives);
+		}
+		UE_LOG(LogTemp,Log,TEXT("Lives: %s"), *FString::FromInt(Lives));
+		if(Lives > 0)
+		{
+			if(GM)
+			{
+				//Restart Player position
+				GM->OnActorKilled.Broadcast(GetOwner(),GetOwner()->GetInstigatorController());
+			}
+		}
+		else
+		{
+			if(GM)
+			{
+				// GameOver for this player
+			}
+		}
+		
 	}
 
 }
@@ -78,9 +102,24 @@ void USHealthComponent::Heal(float HealAmount)
 	OnHealthChanged.Broadcast(Health,-HealAmount,nullptr,nullptr,nullptr);
 }
 
+void USHealthComponent::Restore()
+{
+	if(Lives <= 0)
+	{
+		return;
+	}
+	Health = DefaultHealth;
+	bIsDead = Health <= 0.0f;
+}
+
 float USHealthComponent::GetHealth() const
 {
 	return  Health;
+}
+
+int USHealthComponent::GetLives() const
+{
+	return Lives;
 }
 
 bool USHealthComponent::IsDead()

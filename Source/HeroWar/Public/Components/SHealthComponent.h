@@ -28,6 +28,9 @@ public:
 	UPROPERTY(Replicated,BlueprintReadOnly,Category="HealthComponent")
 	float Health;
 
+	UPROPERTY(Replicated,BlueprintReadOnly,Category="HealthComponent")
+	int Lives;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HealthComponent")
 	float DefaultHealth;
 
@@ -42,9 +45,13 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="HealthComponent")
 	void Heal(float HealAmount);
-	
+
+	UFUNCTION(BlueprintCallable, Category="HealthComponent")
+	void Restore();
 
 	float GetHealth() const;
+
+	int GetLives() const;
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDead();
